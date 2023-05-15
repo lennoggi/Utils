@@ -25,7 +25,7 @@ using namespace std;
 
 
 // Function to be interpolated
-double f(double x) {
+double f(const double &x) {
     return sin(x);
 }
 
