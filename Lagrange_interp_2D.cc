@@ -191,12 +191,10 @@ int main() {
     const auto &xwindow        = xwindow_struct.window;
 
     const auto  ywindow_struct = get_window(ny_low, ny_up, PY, ygrid);
-    //const auto &ny_grid_low    = ywindow_struct.n_grid_low;  // Not used
     const auto &ywindow        = ywindow_struct.window;
 
 
     // Interpolate
-
     vector<double> fywindow(PY + 1);
     for (int j = 0; j <= PY; ++j) {
         vector<double> fxwindow(PX + 1);
