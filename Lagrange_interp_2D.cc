@@ -58,11 +58,13 @@ double f(const double &x,
 vector<double> get_grid(const double &min,
                         const double &max,
                         const int    &npoints) {
+    assert(npoints > 1);
     const double delta = (max - min)/(npoints - 1);
     vector<double> grid(npoints);
 
-    for (int n = 0; n < npoints; ++n) {
-        grid.at(n) = min + n*delta;
+    grid.at(0) = min;
+    for (int n = 1; n < npoints; ++n) {
+        grid.at(n) = grid.at(n - 1) + delta;
     }
 
     return grid;
