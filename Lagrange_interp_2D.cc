@@ -199,9 +199,6 @@ int main() {
     const int nx_lowup    = (PX & 1) ? nx_low : nx_up;
     const int nx_grid_low = nx_lowup - PX/2;
 
-    const int ny_lowup    = (PY & 1) ? ny_low : ny_up;
-    const int ny_grid_low = ny_lowup - PY/2;
-
     vector<double> fywindow(PY + 1);
     for (int j = 0; j <= PY; ++j) {
         vector<double> fxwindow(PX + 1);
