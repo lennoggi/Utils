@@ -87,6 +87,7 @@ array<int, 2> locate(const double         &target,
     }
 
     assert(nup == nlow + 1);
+    assert(target >= grid.at(nlow) and target <= grid.at(nup));
 
     const array<int, 2> bounds = {nlow, nup};
     return bounds;
