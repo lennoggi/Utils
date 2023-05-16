@@ -131,7 +131,7 @@ window_t get_window(const int &nlow,
     }
 
     else {
-        const int n_grid_low = n_lowup - order_half;
+        n_grid_low = n_lowup - order_half;
         for (int i = 0; i <= order; ++i) {
             window.at(i) = grid.at(i + n_grid_low);
         }
