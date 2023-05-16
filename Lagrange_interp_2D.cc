@@ -20,8 +20,8 @@ using namespace std;
 
 
 // Point onto which the interpolation will be performed
-#define X 8.32
-#define Y 18.86
+#define X 9.92
+#define Y 0.16
 
 
 // Degrees of the Lagrange interpolating polynomials along x and y
@@ -100,25 +100,33 @@ array<int, 2> locate(const double         &target,
  * the interpolating polynomial -- centered around the target point, or
  * off-centered if the latter is too close to the boundaries
  * ============================================================================= */
-vector<double> get_window(const int &nlow,
-                          const int &nup,
-                          const int &order,
-                          const vector<double> &grid) {
-    const int npoints      = grid.size();
-    const int order_half   = order/2;  // **INTEGER** division
-    const int n_lowup = (order & 1) ? nlow : nup;
+typedef struct {
+    int n_grid_low;
+    vector<double> window;
+} window_t;
+
+window_t get_window(const int &nlow,
+                    const int &nup,
+                    const int &order,
+                    const vector<double> &grid) {
+    const int npoints    = grid.size();
+    const int order_half = order/2;  // **INTEGER** division
+    const int n_lowup    = (order & 1) ? nlow : nup;
+
+    int n_grid_low;
     vector<double> window(order + 1);
 
     if (n_lowup < order_half) {
+        n_grid_low = 0;
         for (int i = 0; i <= order; ++i) {
             window.at(i) = grid.at(i);
         }
     }
 
     else if (nup >= npoints - order_half) {
-        const int offset_end = npoints - order - 1;
+        n_grid_low = npoints - order - 1;
         for (int i = 0; i <= order; ++i) {
-            window.at(i) = grid.at(i + offset_end);
+            window.at(i) = grid.at(n_grid_low + i);
         }
     }
 
@@ -129,7 +137,8 @@ vector<double> get_window(const int &nlow,
         }
     }
 
-    return window;
+    const window_t window_struct = {n_grid_low, window};
+    return window_struct;
 }
 
 
@@ -190,14 +199,18 @@ int main() {
     const auto &ny_up  = ybounds.at(1);
 
 
+
     // Get the interpolation windows along x and y
-    const auto xwindow = get_window(nx_low, nx_up, PX, xgrid);
-    const auto ywindow = get_window(ny_low, ny_up, PY, ygrid);
+    const auto  xwindow_struct = get_window(nx_low, nx_up, PX, xgrid);
+    const auto &nx_grid_low    = xwindow_struct.n_grid_low;
+    const auto &xwindow        = xwindow_struct.window;
+
+    const auto  ywindow_struct = get_window(ny_low, ny_up, PY, ygrid);
+    //const auto &ny_grid_low    = ywindow_struct.n_grid_low;  // Not used
+    const auto &ywindow        = ywindow_struct.window;
 
 
     // Interpolate
-    const int nx_lowup    = (PX & 1) ? nx_low : nx_up;
-    const int nx_grid_low = nx_lowup - PX/2;
 
     vector<double> fywindow(PY + 1);
     for (int j = 0; j <= PY; ++j) {
