@@ -20,8 +20,8 @@ using namespace std;
 
 
 // Point onto which the interpolation will be performed
-#define X 9.92
-#define Y 0.16
+#define X 0.12
+#define Y 19.96
 
 
 // Degrees of the Lagrange interpolating polynomials along x and y
@@ -113,28 +113,13 @@ window_t get_window(const int &nlow,
     const int order_half = order/2;  // **INTEGER** division
     const int n_lowup    = (order & 1) ? nlow : nup;
 
-    int n_grid_low;
+    const int n_grid_low = (n_lowup < order_half)        ? 0 :
+                           (nup >= npoints - order_half) ? npoints - order - 1 :
+                           n_lowup - order_half;
     vector<double> window(order + 1);
 
-    if (n_lowup < order_half) {
-        n_grid_low = 0;
-        for (int i = 0; i <= order; ++i) {
-            window.at(i) = grid.at(i);
-        }
-    }
-
-    else if (nup >= npoints - order_half) {
-        n_grid_low = npoints - order - 1;
-        for (int i = 0; i <= order; ++i) {
-            window.at(i) = grid.at(n_grid_low + i);
-        }
-    }
-
-    else {
-        n_grid_low = n_lowup - order_half;
-        for (int i = 0; i <= order; ++i) {
-            window.at(i) = grid.at(i + n_grid_low);
-        }
+    for (int i = 0; i <= order; ++i) {
+        window.at(i) = grid.at(n_grid_low + i);
     }
 
     const window_t window_struct = {n_grid_low, window};
