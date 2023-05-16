@@ -41,9 +41,9 @@ using namespace std;
 
 
 
-/* ***************************
+/* ===========================
  * Function to be interpolated
- * *************************** */
+ * =========================== */
 double f(const double &x,
          const double &y) {
     const double r = sqrt(x*x + y*y);
@@ -52,9 +52,9 @@ double f(const double &x,
 
 
 
-/* *********************
- * Routine to get a grid
- * ********************* */
+/* ==========================
+ * Routine building a 1D grid
+ * ========================== */
 vector<double> get_grid(const double &min,
                         const double &max,
                         const int    &npoints) {
