@@ -70,9 +70,9 @@ vector<double> get_grid(const double &min,
 
 
 
-/* ************************************************************
+/* ============================================================
  * Routine to locate a point inside a 1D grid via binary search
- * ************************************************************ */
+ * ============================================================ */
 array<int, 2> locate(const double         &target,
                      const vector<double> &grid) {
     int nlow = 0;
@@ -86,17 +86,17 @@ array<int, 2> locate(const double         &target,
 
     assert(nup == nlow + 1);
 
-    const array<int, 2> bounds{nlow, nup};
+    const array<int, 2> bounds = {nlow, nup};
     return bounds;
 }
 
 
 
-/* *****************************************************************************
+/* =============================================================================
  * Routine selecting a window of order+1 points -- 'order' is the order of the
  * interpolating polynomial -- centered around the target point, or off-centered
  * if the latter is too close to the boundaries
- * ******************************************************************************/
+ * ============================================================================= */
 vector<double> get_window(const int &nlow,
                           const int &nup,
                           const int &order,
@@ -131,9 +131,9 @@ vector<double> get_window(const int &nlow,
 
 
 
-/* ************************************************
+/* ================================================
  * Routine performing the 1D Lagrange interpolation
- * ************************************************ */
+ * ================================================ */
 double Lagrange_interp_1d(const double         &target,
                           const vector<double> &window,
                           const vector<double> &fwindow) {
@@ -160,9 +160,9 @@ double Lagrange_interp_1d(const double         &target,
 
 
 
-/* *************
+/* =============
  * Main function
- * ************* */
+ * ============= */
 int main() {
     // Sanity checks
     assert(X >= XMIN and X <= XMAX);
