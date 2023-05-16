@@ -96,9 +96,9 @@ array<int, 2> locate(const double         &target,
 
 
 /* =============================================================================
- * Routine selecting a window of order+1 points -- 'order' is the order of the
- * interpolating polynomial -- centered around the target point, or off-centered
- * if the latter is too close to the boundaries
+ * Routine selecting a window of order+1 points -- where 'order' is the order of
+ * the interpolating polynomial -- centered around the target point, or
+ * off-centered if the latter is too close to the boundaries
  * ============================================================================= */
 vector<double> get_window(const int &nlow,
                           const int &nup,
