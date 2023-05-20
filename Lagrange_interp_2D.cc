@@ -20,8 +20,8 @@ using namespace std;
 
 
 // Point onto which the interpolation will be performed
-#define X 0.12
-#define Y 19.96
+#define X -0.18
+#define Y 20.19
 
 
 // Degrees of the Lagrange interpolating polynomials along x and y
@@ -56,10 +56,9 @@ double f(const double &x,
  * Routine building a 1D grid
  * ========================== */
 vector<double> get_grid(const double &min,
-                        const double &max,
+                        const double &delta,
                         const int    &npoints) {
     assert(npoints > 1);
-    const double delta = (max - min)/(npoints - 1);
     vector<double> grid(npoints);
 
     grid.at(0) = min;
@@ -76,21 +75,66 @@ vector<double> get_grid(const double &min,
  * Routine to locate a point inside a 1D grid via binary search
  * ============================================================ */
 array<int, 2> locate(const double         &target,
-                     const vector<double> &grid) {
-    int nlow = 0;
-    int nup  = grid.size() - 1;
-    int nhalf;
+                     const vector<double> &grid,
+                     const double         &tol) {
+    // Make sure the grid makes sense
+    const int size = grid.size();
+    assert(size > 1);
 
-    while (nlow < nup - 1) {
-        nhalf = (nlow + nup)/2;  // **INTEGER** division
-        (target >= grid.at(nhalf)) ? nlow = nhalf : nup = nhalf;
+    for (int i = 1; i < size; ++i) {
+        assert(grid.at(i) > grid.at(i - 1));
     }
 
-    assert(nup == nlow + 1);
-    assert(target >= grid.at(nlow) and target <= grid.at(nup));
 
-    const array<int, 2> bounds = {nlow, nup};
-    return bounds;
+    // Handle small out-of-bounds occurrences
+    assert(tol > 0.);
+
+    if (target < grid.front()) {
+        if (target < grid.front() - tol) {
+            cout << "ERROR (line " << __LINE__ << "): target=" << target
+                 << " is out of bounds and tolerance on the left side of the grid (tolerance: "
+                 << tol << ")" << endl;
+            exit(EXIT_FAILURE);
+        }
+
+        else {
+            const array<int, 2> bounds = {0, 1};
+            return bounds;
+        }
+    }
+
+
+    else if (target > grid.back()) {
+        if (target > grid.back() + tol) {
+            cout << "ERROR (line " << __LINE__ << "): target=" << target
+                 << " is out of bounds and tolerance on the right side of the grid (tolerance: "
+                 << tol << ")" << endl;
+            exit(EXIT_FAILURE);
+        }
+
+        else {
+            const array<int, 2> bounds = {size - 2, size - 1};
+            return bounds;
+        }
+    }
+
+
+    else {
+        int nlow = 0;
+        int nup  = grid.size() - 1;
+        int nhalf;
+
+        while (nlow < nup - 1) {
+            nhalf = (nlow + nup)/2;  // **INTEGER** division
+            (target >= grid.at(nhalf)) ? nlow = nhalf : nup = nhalf;
+        }
+
+        assert(nup == nlow + 1);
+        assert(target >= grid.at(nlow) and target <= grid.at(nup));
+
+        const array<int, 2> bounds = {nlow, nup};
+        return bounds;
+    }
 }
 
 
@@ -162,24 +206,29 @@ double Lagrange_interp_1d(const double         &target,
  * ============= */
 int main() {
     // Sanity checks
-    assert(X >= XMIN and X <= XMAX);
-    assert(Y >= YMIN and Y <= YMAX);
+    // FIXME: removed to check if the tolerance in locate() works as expected
+    //static_assert(X >= XMIN and X <= XMAX);
+    //static_assert(Y >= YMIN and Y <= YMAX);
 
-    assert(PX < NX);
-    assert(PY < NY);
+    static_assert(PX < NX);
+    static_assert(PY < NY);
 
 
     // Build the grid
-    const auto xgrid = get_grid(XMIN, XMAX, NX);
-    const auto ygrid = get_grid(YMIN, YMAX, NY);
+    const double deltax = (XMAX - XMIN)/(NX - 1.);
+    const auto   xgrid  = get_grid(XMIN, deltax, NX);
+
+    const double deltay = (YMAX - YMIN)/(NY - 1.);
+    const auto   ygrid  = get_grid(YMIN, deltay, NY);
 
 
-    // Locate the interpolation point inside the grid via binary search
-    const auto xbounds = locate(X, xgrid);
+    /* Locate the interpolation point inside the grid via binary search and
+     * handle out-of-bounds up to delta/2 in any direction                      */
+    const auto xbounds = locate(X, xgrid, 0.5*deltax);
     const auto &nx_low = xbounds.at(0);
     const auto &nx_up  = xbounds.at(1);
 
-    const auto ybounds = locate(Y, ygrid);
+    const auto ybounds = locate(Y, ygrid, 0.5*deltay);
     const auto &ny_low = ybounds.at(0);
     const auto &ny_up  = ybounds.at(1);
 
