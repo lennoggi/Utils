@@ -121,7 +121,7 @@ array<int, 2> locate(const double         &target,
 
     else {
         int nlow = 0;
-        int nup  = grid.size() - 1;
+        int nup  = size - 1;
         int nhalf;
 
         while (nlow < nup - 1) {
