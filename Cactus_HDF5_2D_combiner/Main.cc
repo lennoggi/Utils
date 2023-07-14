@@ -1,8 +1,10 @@
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
-#include <hdf5.h>
+#include <H5Cpp.h>
 
+#include "include/Macros.hh"
+#include "include/Types.hh"
 #include "include/Declarations.hh"
 #include "Parameters.hh"
 
@@ -42,9 +44,11 @@ int main() {
 
     const op_data_t op_data = {&output_file, &input_file_2};
 
-    CHECK_ERROR(H5Literate(input_file_1.getId(),
+    CHECK_ERROR(H5Literate(output_file.getId(),
                            H5_INDEX_NAME, H5_ITER_NATIVE, nullptr,
                            combine_Cactus_HDF5, (void*) &op_data));
+
+    cout << "Done" << endl;
 
     return 0;
 }
