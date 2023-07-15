@@ -1,5 +1,5 @@
 #ifndef DECLARATIONS_HH
-#define DECARATIONS_HH
+#define DECLARATIONS_HH
 
 #include <hdf5.h>
 

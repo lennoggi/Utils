@@ -40,13 +40,13 @@ EXE = Cactus_HDF5_2D_combiner_exe
 
 # Build all targets
 build: ${OBJ}
-	${CXX} -o ${EXE} ${OBJ} ${CXXFLAGS} ${CXX_OPTIMIZE_FLAGS} ${CXX_WARN_FLAGS} ${CXX_DEBUG_FLAGS} ${LDFLAGS} -I${HDF5_INC_DIR} -L${HDF5_LIBS_DIR} ${HDF5_LIBS}
+	${CXX} ${CXXFLAGS} ${CXX_OPTIMIZE_FLAGS} ${CXX_WARN_FLAGS} ${CXX_DEBUG_FLAGS} ${LDFLAGS} -o ${EXE} ${OBJ} -I${HDF5_INC_DIR} -L${HDF5_LIBS_DIR} ${HDF5_LIBS}
 
 Main.o: Main.cc Parameters.hh include/Declarations.hh include/Macros.hh include/Types.hh
-	${CXX} -c Main.cc ${CXXFLAGS} ${CXX_OPTIMIZE_FLAGS} ${CXX_WARN_FLAGS} ${CXX_DEBUG_FLAGS} ${LDFLAGS} -I${HDF5_INC_DIR}
+	${CXX} ${CXXFLAGS} ${CXX_OPTIMIZE_FLAGS} ${CXX_WARN_FLAGS} ${CXX_DEBUG_FLAGS} ${LDFLAGS} -c Main.cc -I${HDF5_INC_DIR}
 
 Combine_Cactus_HDF5.o: Combine_Cactus_HDF5.cc Parameters.hh include/Declarations.hh include/Macros.hh include/Types.hh
-	${CXX} -c Combine_Cactus_HDF5.cc ${CXXFLAGS} ${CXX_OPTIMIZE_FLAGS} ${CXX_WARN_FLAGS} ${CXX_DEBUG_FLAGS} ${LDFLAGS} -I${HDF5_INC_DIR}
+	${CXX} ${CXXFLAGS} ${CXX_OPTIMIZE_FLAGS} ${CXX_WARN_FLAGS} ${CXX_DEBUG_FLAGS} ${LDFLAGS} -c Combine_Cactus_HDF5.cc -I${HDF5_INC_DIR}
 
 
 # Remove the executable and all object files

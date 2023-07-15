@@ -2,17 +2,25 @@
 #define PARAMETERS_HH
 
 
-#define INPUT_FILE_1 "/shared/rc/ccrg/le8016/BBH_handoff_McLachlan_pp08/output-0003/HDF5_2D/smallb2.xz.h5"
-#define INPUT_FILE_2 "/shared/rc/ccrg/le8016/BBH_handoff_McLachlan_pp08/output-0003/HDF5_2D/rho_b.xz.h5"
+#define INPUT_FILE_1 "/home/lorenzo/smallb2.xz.h5"
+#define INPUT_FILE_2 "/home/lorenzo/rho_b.xz.h5"
 
-#define OUTPUT_FILE "/shared/rc/ccrg/le8016/smallb2_over_rho_b.xz.h5"
+#define OUTPUT_FILE "/home/lorenzo/magnetization.xz.h5"
 
 #define DATASET_BASENAME_1 "SMALLBPOYNET::smallb2"
 #define DATASET_BASENAME_2 "ILLINOISGRMHD::rho_b"
 
-#define OPERATION "/"
+// Choose among "linear combination", "product", or "ratio"
+#define OPERATION "ratio"
 
-#define VERBOSE false
+// Linear combination: LINCOMB_A1*dataset1 + LINCOMB_A2*dataset2
+#define LINCOMB_A1 1.
+#define LINCOMB_A2 1.
+
+// Overall multiplicative factor when computing a product or ratio
+#define PROD_RATIO_FAC 0.5
+
+#define VERBOSE true
 
 
 #endif  // PARAMETERS_HH

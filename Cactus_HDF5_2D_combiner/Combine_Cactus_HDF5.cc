@@ -4,6 +4,7 @@
 #include <sstream>
 #include <vector>
 #include <regex>
+
 #include <H5Cpp.h>
 
 #include "include/Macros.hh"
@@ -122,70 +123,49 @@ herr_t combine_Cactus_HDF5(hid_t             loc_id,
 
 
             // TODO: generalize to support ndims != 2
-            assert(ndims == 2);
-
-            /*auto dims_tot = dims.at(0);
-
-            if (ndims > 1) {
-                for (int n = 1; n < ndims; ++n) {
-                    dims_tot *= dims.at(n);
-                }
+            if (ndims != 2) {
+                cout << "Sorry, only 2D datasets are supported right now (ndims = "
+                     << ndims << ")" << endl;
+                return -1;  // Stop iterating over loc_id
             }
 
-            vector<double> buffer1(dims_tot), buffer2(dims_tot);*/
+            double buffer1[dims.at(0)][dims.at(1)];
+            double buffer2[dims.at(0)][dims.at(1)];
 
-            double **buffer1 = new double*[dims.at(0)];
-            double **buffer2 = new double*[dims.at(0)];
+            dset1.read(buffer1, PredType::NATIVE_DOUBLE);
+            dset2.read(buffer2, PredType::NATIVE_DOUBLE);
 
-            for (hsize_t i = 0; i < dims.at(0); ++i) {
-                buffer1[i] = new double[dims.at(1)];
-                buffer2[i] = new double[dims.at(1)];
-            }
 
-            dset1.read(buffer1, PredType::NATIVE_DOUBLE, H5S_ALL, H5S_ALL);
-            dset2.read(buffer2, PredType::NATIVE_DOUBLE, H5S_ALL, H5S_ALL);
-
-cout << "CHECKPOINT 1" << endl;
-for (hsize_t i = 0; i < dims.at(0); ++i) {
-    for (hsize_t j = 0; j < dims.at(1); ++j) {
-        cout << "i=" << i << ", j=" << j << endl;
-        cout << buffer1[i][j] << " ";
-    }
-
-    cout << endl;
-}
-cout << "CHECKPOINT 2" << endl;
-
-            /*  Modify dataset 1 using dataset 2 and write the result back to
+            /* Modify dataset 1 using dataset 2 and write the result back to
              * dataset 1                                                        */
             const string operation = OPERATION;
 
-            if (operation == "+") {
+            if (operation == "linear combination") {
                 for (hsize_t i = 0; i < dims.at(0); ++i) {
                     for (hsize_t j = 0; j < dims.at(1); ++j) {
-                        buffer1[i][j] += buffer2[i][j];
+                        auto &buffer1_ij = buffer1[i][j];
+                        buffer1_ij = LINCOMB_A1*buffer1_ij + LINCOMB_A2*buffer2[i][j];
                     }
                 }
-            } else if (operation == "-") {
+            } else if (operation == "product") {
                 for (hsize_t i = 0; i < dims.at(0); ++i) {
                     for (hsize_t j = 0; j < dims.at(1); ++j) {
-                        buffer1[i][j] -= buffer2[i][j];
+                        auto &buffer1_ij = buffer1[i][j];
+                        buffer1_ij *= buffer2[i][j];
+                        buffer1_ij *= PROD_RATIO_FAC;
                     }
                 }
-            } else if (operation == "*") {
-                for (hsize_t i = 0; i < dims.at(0); ++i) {
-                    for (hsize_t j = 0; j < dims.at(1); ++j) {
-                        buffer1[i][j] *= buffer2[i][j];
-                    }
-                }
-            } else if (operation == "/") {
+            } else if (operation == "ratio") {
                 for (hsize_t i = 0; i < dims.at(0); ++i) {
                     for (hsize_t j = 0; j < dims.at(1); ++j) {
                         if (buffer2[i][j] == 0.) {
                             cout << "Division by zero encountered" << endl;
                             return -1;  // Stop iterating over loc_id
                         }
-                        buffer1[i][j] /= buffer2[i][j];
+
+                        auto &buffer1_ij = buffer1[i][j];
+                        buffer1_ij /= buffer2[i][j];
+                        buffer1_ij *= PROD_RATIO_FAC;
                     }
                 }
             } else {
@@ -195,13 +175,7 @@ cout << "CHECKPOINT 2" << endl;
             }
 
 
-            const DataSpace mspace(ndims, dims.data());
-            dset1.write(buffer1, PredType::NATIVE_DOUBLE, mspace, dspace1);
-
-            for (hsize_t i = 0; i < dims.at(0); ++i) {
-                delete[] buffer1[i];
-                delete[] buffer2[i];
-            }
+            dset1.write(buffer1, PredType::NATIVE_DOUBLE);
 
             #if (VERBOSE)
             cout << "Done processing dataset '"
