@@ -20,7 +20,9 @@
 // Overall multiplicative factor when computing a product or ratio
 #define PROD_RATIO_FAC 0.5
 
-#define VERBOSE true
+/* Tip: just make the code verbose during debug, otherwise the execution is
+ * slowed down                                                                  */
+#define VERBOSE false
 
 
 #endif  // PARAMETERS_HH
