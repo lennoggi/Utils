@@ -2,10 +2,10 @@
 #define PARAMETERS_HH
 
 
-#define INPUT_FILE_1 "/home/lorenzo/smallb2.xz.h5"
-#define INPUT_FILE_2 "/home/lorenzo/rho_b.xz.h5"
+#define INPUT_FILE_1 "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/output-0005/HDF5_2D/smallb2.xz.h5"
+#define INPUT_FILE_2 "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/output-0005/HDF5_2D/rho_b.xz.h5"
 
-#define OUTPUT_FILE "/home/lorenzo/magnetization.xz.h5"
+#define OUTPUT_FILE "/scratch3/07825/lennoggi/magnetization.xz.h5"
 
 #define DATASET_BASENAME_1 "SMALLBPOYNET::smallb2"
 #define DATASET_BASENAME_2 "ILLINOISGRMHD::rho_b"
