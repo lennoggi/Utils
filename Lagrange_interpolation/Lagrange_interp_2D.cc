@@ -55,9 +55,9 @@ double f(const double &x,
 /* ==========================
  * Routine building a 1D grid
  * ========================== */
-vector<double> build_1d_grid(const double &min,
-                             const double &delta,
-                             const int    &npoints) {
+vector<double> coords_1d(const double &min,
+                         const double &delta,
+                         const int    &npoints) {
     assert(npoints > 1);
     vector<double> grid(npoints);
 
@@ -216,10 +216,10 @@ int main() {
 
     // Build the grid
     const double deltax = (XMAX - XMIN)/(NX - 1.);
-    const auto   xgrid  = build_1d_grid(XMIN, deltax, NX);
+    const auto   xgrid  = coords_1d(XMIN, deltax, NX);
 
     const double deltay = (YMAX - YMIN)/(NY - 1.);
-    const auto   ygrid  = build_1d_grid(YMIN, deltay, NY);
+    const auto   ygrid  = coords_1d(YMIN, deltay, NY);
 
 
     /* Locate the interpolation point inside the grid via binary search and
