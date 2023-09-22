@@ -1,7 +1,7 @@
 #ifndef DECLARATIONS_HH
 #define DECLARATIONS_HH
 
-#include <hdf5.h>
+#include <H5Cpp.h>
 
 herr_t combine_Cactus_HDF5(hid_t             loc_id,
                            const char       *object_name,

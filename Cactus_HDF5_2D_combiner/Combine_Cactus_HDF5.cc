@@ -20,14 +20,24 @@ herr_t combine_Cactus_HDF5(hid_t             loc_id,
                            const char       *object_name,
                            const H5L_info_t *info,  // Not used
                            void             *op_data) {
-    // Don't use 'Parameters and Global Attributes'
+    const auto &output_file_ptr    = ((op_data_t*) op_data)->output_file_ptr;
+    const auto &input_file_2_ptr   = ((op_data_t*) op_data)->input_file_2_ptr;
+    const auto &out_dset_name      = ((op_data_t*) op_data)->out_dset_name;
+    const auto &out_dset_name_size = ((op_data_t*) op_data)->out_dset_name_size;
+          auto &dset_list_ptr      = ((op_data_t*) op_data)->dset_list_ptr;
+
     const string object_name_str = object_name;
+
+    // Erase and rewrite the dataset telling which datasets are in the file
     if (object_name_str == "Parameters and Global Attributes") {
-        return 0;
+        const auto metadata_group = output_file_ptr->openGroup(object_name_str);
+        metadata_group.unlink("Datasets");
+        const StrType str_type(0, out_dset_name_size);
+        const auto new_dset = metadata_group.createDataSet("Datasets", str_type, DataSpace(H5S_SCALAR));
+        new_dset.write(out_dset_name, str_type);
+        return 0;  // Keep on iterating over loc_id
     }
 
-    const auto output_file_ptr  = ((op_data_t*) op_data)->output_file_ptr;
-    const auto input_file_2_ptr = ((op_data_t*) op_data)->input_file_2_ptr;
 
     ostringstream regex_ss;
     regex_ss << DATASET_BASENAME_1
@@ -48,6 +58,11 @@ herr_t combine_Cactus_HDF5(hid_t             loc_id,
 
             const auto dset1 = output_file_ptr->openDataSet(dset1_name);
             DataSet dset2;
+
+            /* Add the name of the current dataset to the list of datasets in
+             * the output file for later renaming                               */
+            dset_list_ptr->push_back(object_name_str);
+
 
             /* Try to open dataset 2 with the same iteration, map, refinement
              * level and component as dataset 1                                 */
@@ -176,6 +191,13 @@ herr_t combine_Cactus_HDF5(hid_t             loc_id,
 
 
             dset1.write(buffer1, PredType::NATIVE_DOUBLE);
+
+
+            // Erase and rewrite the 'name' attribute in dataset 1
+            dset1.removeAttr("name");
+            const StrType str_type(0, out_dset_name_size);
+            const auto new_attr = dset1.createAttribute("name", str_type, DataSpace(H5S_SCALAR));
+            new_attr.write(str_type, out_dset_name);
 
             #if (VERBOSE)
             cout << "Done processing dataset '"
