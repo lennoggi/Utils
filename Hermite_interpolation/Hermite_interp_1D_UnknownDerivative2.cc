@@ -74,7 +74,7 @@ double Hermite_interp_1D(const array<double, N> &x,
 
 
     // Compute the Hermite polynomial at the target point
-    double interp_val = Q.at(0).at(0);
+    /*double interp_val = Q.at(0).at(0);
 
     for (int i = 1; i < 2*n; ++i) {
         double prod = 1;
@@ -84,6 +84,12 @@ double Hermite_interp_1D(const array<double, N> &x,
         }
 
         interp_val += Q.at(i).at(i)*prod;
+    }*/
+
+    double interp_val = Q.at(2*N-1).at(2*N-1);
+
+    for (int k = 1; k < 2*N; ++k) {
+        interp_val = Q.at(2*N-1-k).at(2*N-1-k) + (target - z.at(2*N-1-k))*interp_val;
     }
 
     return interp_val;
