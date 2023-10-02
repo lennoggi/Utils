@@ -26,6 +26,7 @@ double Hermite_interp_1D(const array<double, N> &x,
         }
     }
 
+
     // Fill z and the first two columns of Q
     for (int i = 0; i < N; ++i) {
         const auto &xi  = x.at(i);
@@ -48,6 +49,7 @@ double Hermite_interp_1D(const array<double, N> &x,
         }
     }
 
+
     // Fill all the other columns of Q
     for (int i = 2; i < 2*N; ++i) {
         for (int j = 2; j <= i; ++j) {
@@ -55,7 +57,8 @@ double Hermite_interp_1D(const array<double, N> &x,
         }
     }
 
-    // Print the divided differences table
+
+    // Print the divided differences table and the Hermite polynimial coefficients
     for (int i = 0; i < 2*N; ++i) {
         cout << setw(3) << z.at(i);
         for (int j = 0; j < 2*N; ++j) {
@@ -65,8 +68,15 @@ double Hermite_interp_1D(const array<double, N> &x,
         cout << endl;
     }
 
+    cout << endl << "Coefficients: ";
+    for (int i = 0; i < 2*N; ++i) {
+        cout << Q.at(i).at(i) << " ";
+    }
+    cout << endl;
+
+
     // Compute the Hermite polynomial at the target point
-    double interp_val = 0.;
+    double interp_val = Q.at(0).at(0);
 
     for (int i = 1; i < 2*N; ++i) {
         double prod = 1;
@@ -80,6 +90,8 @@ double Hermite_interp_1D(const array<double, N> &x,
 
     return interp_val;
 }
+
+
 
 
 
