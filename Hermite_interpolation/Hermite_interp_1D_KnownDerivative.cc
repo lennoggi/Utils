@@ -12,6 +12,8 @@ double Hermite_interp_1D(const array<double, N> &x,
                          const array<double, N> &f,
                          const array<double, N> &fder,
                          const double &target) {
+    static_assert(N >= 2);
+
     array<double, 2*N>             z;
     array<array<double, 2*N>, 2*N> Q;
 

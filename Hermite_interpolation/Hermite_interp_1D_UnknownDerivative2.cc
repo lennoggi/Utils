@@ -10,8 +10,7 @@ using namespace std;
 
 double Hermite_interp_1D(const array<double, N> &x,
                          const array<double, N> &f,
-                         const double &target)
-{
+                         const double &target) {
     static_assert(N >= 4);
     const int n = N - 2;
 
