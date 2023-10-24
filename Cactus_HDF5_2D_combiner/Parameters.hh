@@ -3,13 +3,13 @@
 
 
 // Full paths to the input files to be processed
-#define INPUT_FILE_1 "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/output-0000/HDF5_2D/smallb2.xz.h5"
-#define INPUT_FILE_2 "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/output-0000/HDF5_2D/rho_b.xz.h5"
+#define INPUT_FILE_1 "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/output-0016/HDF5_2D/smallb2.xz.h5"
+#define INPUT_FILE_2 "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/output-0016/HDF5_2D/rho_b.xz.h5"
 //define INPUT_FILE_2 "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/output-0000/HDF5_2D/P.xz.h5"
 
 
 // Full path to the output file
-#define OUTPUT_FILE "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/output-0000/HDF5_2D/b2_over_rho.xz.h5"
+#define OUTPUT_FILE "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/output-0016/HDF5_2D/b2_over_rho.xz.h5"
 //#define OUTPUT_FILE "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/output-0000/HDF5_2D/b2_over_2P.xz.h5"
 
 
