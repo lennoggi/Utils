@@ -137,60 +137,92 @@ herr_t combine_Cactus_HDF5(hid_t             loc_id,
             }
 
 
-            // TODO: generalize to support ndims != 2
-            if (ndims != 2) {
-                cout << "Sorry, only 2D datasets are supported right now (ndims = "
-                     << ndims << ")" << endl;
-                return -1;  // Stop iterating over loc_id
-            }
-
-            double buffer1[dims.at(0)][dims.at(1)];
-            double buffer2[dims.at(0)][dims.at(1)];
-
-            dset1.read(buffer1, PredType::NATIVE_DOUBLE);
-            dset2.read(buffer2, PredType::NATIVE_DOUBLE);
-
-
             /* Modify dataset 1 using dataset 2 and write the result back to
              * dataset 1                                                        */
             const string operation = OPERATION;
 
-            if (operation == "linear combination") {
-                for (hsize_t i = 0; i < dims.at(0); ++i) {
-                    for (hsize_t j = 0; j < dims.at(1); ++j) {
-                        auto &buffer1_ij = buffer1[i][j];
-                        buffer1_ij = LINCOMB_A1*buffer1_ij + LINCOMB_A2*buffer2[i][j];
-                    }
-                }
-            } else if (operation == "product") {
-                for (hsize_t i = 0; i < dims.at(0); ++i) {
-                    for (hsize_t j = 0; j < dims.at(1); ++j) {
-                        auto &buffer1_ij = buffer1[i][j];
-                        buffer1_ij *= buffer2[i][j];
-                        buffer1_ij *= PROD_RATIO_FAC;
-                    }
-                }
-            } else if (operation == "ratio") {
-                for (hsize_t i = 0; i < dims.at(0); ++i) {
-                    for (hsize_t j = 0; j < dims.at(1); ++j) {
-                        if (buffer2[i][j] == 0.) {
-                            cout << "Division by zero encountered" << endl;
+            if (ndims == 2) {
+                /* NOTE: order is y/x, not x/y
+                 * NOTE: may be xy, xz or yz                                    */
+                const auto &nx   = dims.at(1);
+                const auto &ny   = dims.at(0);
+                const auto  ntot = ny*nx;
+                vector<double> buf1(ntot), buf2(ntot);
+
+                dset1.read(buf1.data(), PredType::NATIVE_DOUBLE);
+                dset2.read(buf2.data(), PredType::NATIVE_DOUBLE);
+
+                for (auto j = decltype(ny){0}; j < ny; ++j) {
+                    const auto j_idx = nx*j;
+                    for (auto i = decltype(nx){0}; i < nx; ++i) {
+                        const auto  ij      = i + j_idx;
+                              auto &buf1_ij = buf1.at(ij);
+                        const auto &buf2_ij = buf2.at(ij);
+
+                        if (operation == "linear combination") {
+                            buf1_ij = LINCOMB_A1*buf1_ij + LINCOMB_A2*buf2_ij;
+                        } else if (operation == "product") {
+                            buf1_ij *= buf2_ij;
+                            buf1_ij *= PROD_RATIO_FAC;
+                        } else if (operation == "ratio") {
+                            buf1_ij /= buf2_ij;
+                            buf1_ij *= PROD_RATIO_FAC;
+                        } else {
+                            cout << "Unrecognized operation '"
+                                 << operation << "'" << endl;
                             return -1;  // Stop iterating over loc_id
                         }
-
-                        auto &buffer1_ij = buffer1[i][j];
-                        buffer1_ij /= buffer2[i][j];
-                        buffer1_ij *= PROD_RATIO_FAC;
                     }
                 }
-            } else {
-                cout << "Unrecognized operation '"
-                     << operation << "'" << endl;
-                return -1;  // Stop iterating over loc_id
+
+                dset1.write(buf1.data(), PredType::NATIVE_DOUBLE);
             }
 
+            else if (ndims == 3) {
+                // NOTE: order is z/y/x, not x/y/z
+                const auto &nx   = dims.at(2);
+                const auto &ny   = dims.at(1);
+                const auto &nz   = dims.at(0);
+                const auto  ntot = nz*ny*nx;
+                vector<double> buf1(ntot), buf2(ntot);
 
-            dset1.write(buffer1, PredType::NATIVE_DOUBLE);
+                dset1.read(buf1.data(), PredType::NATIVE_DOUBLE);
+                dset2.read(buf2.data(), PredType::NATIVE_DOUBLE);
+
+                for (auto k = decltype(nz){0}; k < nz; ++k) {
+                    const auto k_idx = ny*k;
+                    for (auto j = decltype(ny){0}; j < ny; ++j) {
+                        const auto jk_idx = nx*(j + k_idx);
+                        for (auto i = decltype(nx){0}; i < nx; ++i) {
+                            const auto  ijk      = i + jk_idx;
+                                  auto &buf1_ijk = buf1.at(ijk);
+                            const auto &buf2_ijk = buf2.at(ijk);
+
+                            if (operation == "linear combination") {
+                                buf1_ijk = LINCOMB_A1*buf1_ijk + LINCOMB_A2*buf2_ijk;
+                            } else if (operation == "product") {
+                                buf1_ijk *= buf2_ijk;
+                                buf1_ijk *= PROD_RATIO_FAC;
+                            } else if (operation == "ratio") {
+                                buf1_ijk /= buf2_ijk;
+                                buf1_ijk *= PROD_RATIO_FAC;
+                            } else {
+                                cout << "Unrecognized operation '"
+                                     << operation << "'" << endl;
+                                return -1;  // Stop iterating over loc_id
+                            }
+                        }
+                    }
+                }
+
+                dset1.write(buf1.data(), PredType::NATIVE_DOUBLE);
+            }
+
+            else {
+                cout << "Only 2D and 3D datasets are supported ndims = "
+                     << ndims << ")" << endl;
+                return -1;  // Stop iterating over loc_id
+            }
 
 
             // Erase and rewrite the 'name' attribute in dataset 1
