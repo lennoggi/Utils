@@ -10,9 +10,11 @@
 typedef struct {
     H5::H5File *output_file_ptr;
     H5::H5File *input_file_2_ptr;
-    std::string out_dset_name;
-    size_t      out_dset_name_size;
-    std::vector<std::string> *dset_rename_list_ptr;
+    size_t ndsets;
+    std::vector<std::string> *dsets_basenames_in_1_vec_ptr;
+    std::vector<std::string> *dsets_basenames_in_2_vec_ptr;
+    std::vector<std::string> *dsets_basenames_out_vec_ptr;
+    std::vector<std::vector<std::string>> *dset_rename_lists_ptr;
 } op_data_t;
 
 
