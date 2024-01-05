@@ -45,12 +45,12 @@ int main() {
     const string out_dset_name      = DATASET_OUTPUT;
     const auto   out_dset_name_size = out_dset_name.size();
 
-    vector<string> dset_list;
+    vector<string> dset_rename_list;
 
     const op_data_t op_data = {
         &output_file, &input_file_2,
         out_dset_name, out_dset_name_size,
-        &dset_list
+        &dset_rename_list
     };
 
     cout << "Editing datasets in output file '" << OUTPUT_FILE << "'..." << endl;
@@ -72,40 +72,55 @@ int main() {
     cout << "Renaming datasets in output file '" << OUTPUT_FILE << "'..." << endl;
     const auto rename_start = chrono::high_resolution_clock::now();
 
-    for (const auto &dset_name : dset_list) {
+    for (const auto &dset_name : dset_rename_list) {
         ostringstream regex_ss;
-        regex_ss << "(?:[a-zA-Z0-9_:]+) it=([0-9]+) tl=0(?: m=)?([0-9]+)? rl=([0-9]+) c=([0-9]+)";
+        regex_ss << "(?:[a-zA-Z0-9_:\\[\\]]+) it=([0-9]+) tl=([0-9]+)(?: m=)?([0-9]+)? rl=([0-9]+) c=([0-9]+)";
 
         try {
             const regex rule(regex_ss.str());
             smatch matches;
 
             if (regex_match(dset_name, matches, rule)) {
-                assert(matches.size() == 5);
+                assert(matches.size() == 6);
                 const auto dset_name_regex = matches.str(0);
-                const auto it   = matches.str(1);
-                const auto map  = (matches[2].length() == 0) ? to_string(0) : matches.str(2);
-                const auto rlvl = matches.str(3);
-                const auto comp = matches.str(4);
+                const auto it = matches.str(1);
+                const auto tl = matches.str(2);
+                const auto m  = (matches[3].length() == 0) ? to_string(0) : matches.str(3);
+                const auto rl = matches.str(4);
+                const auto c  = matches.str(5);
 
                 assert(dset_name_regex == dset_name);
 
                 ostringstream new_dset_name_ss;
-                new_dset_name_ss << out_dset_name << " it=" << it << " tl=0";
+                new_dset_name_ss << out_dset_name << " it=" << it << " tl=" << tl;
 
-                if ((matches[2].length() != 0)) {
-                    new_dset_name_ss << " m=" << map;
+                if ((matches[3].length() != 0)) {
+                    new_dset_name_ss << " m=" << m;
                 }
 
-                new_dset_name_ss << " rl=" << rlvl << " c=" << comp;
+                new_dset_name_ss << " rl=" << rl << " c=" << c;
+                const auto new_dset_name_str = new_dset_name_ss.str();
 
-                CHECK_ERROR(H5Lmove(outfile_id, dset_name.c_str(),
-                                    outfile_id, new_dset_name_ss.str().c_str(),
-                                    H5P_DEFAULT, H5P_DEFAULT));
+                /* Only rename if the new name is actually different from the
+                 * old one, otherwise H5Lmove fails                             */
+                if (dset_name != new_dset_name_str) {
+                    #if (VERBOSE)
+                    cout << "Changing '" << dset_name
+                         << "' into '"   << new_dset_name_str << "'" << endl;
+                    #endif
+                    CHECK_ERROR(H5Lmove(outfile_id, dset_name.c_str(),
+                                        outfile_id, new_dset_name_str.c_str(),
+                                        H5P_DEFAULT, H5P_DEFAULT)); }
+                else {
+                    cout << "Same names '" << dset_name
+                         << "' and '"      << new_dset_name_str
+                         << "', not going to rename the dataset" << endl;
+                }
             }
 
             else {
-                cout << "Dataset name '" << dset_name << "' didn't match against regex" << endl;
+                cout << "Dataset name '" << dset_name
+                     << "' didn't match against regex" << endl;
                 return 1;
             }
         }

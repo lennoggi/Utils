@@ -12,7 +12,7 @@ typedef struct {
     H5::H5File *input_file_2_ptr;
     std::string out_dset_name;
     size_t      out_dset_name_size;
-    std::vector<std::string> *dset_list_ptr;
+    std::vector<std::string> *dset_rename_list_ptr;
 } op_data_t;
 
 

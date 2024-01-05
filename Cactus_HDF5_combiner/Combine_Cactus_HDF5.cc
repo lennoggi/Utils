@@ -20,11 +20,11 @@ herr_t combine_Cactus_HDF5(hid_t             loc_id,
                            const char       *object_name,
                            const H5L_info_t *info,  // Not used
                            void             *op_data) {
-    const auto &output_file_ptr    = ((op_data_t*) op_data)->output_file_ptr;
-    const auto &input_file_2_ptr   = ((op_data_t*) op_data)->input_file_2_ptr;
-    const auto &out_dset_name      = ((op_data_t*) op_data)->out_dset_name;
-    const auto &out_dset_name_size = ((op_data_t*) op_data)->out_dset_name_size;
-          auto &dset_list_ptr      = ((op_data_t*) op_data)->dset_list_ptr;
+    const auto &output_file_ptr      = ((op_data_t*) op_data)->output_file_ptr;
+    const auto &input_file_2_ptr     = ((op_data_t*) op_data)->input_file_2_ptr;
+    const auto &out_dset_name        = ((op_data_t*) op_data)->out_dset_name;
+    const auto &out_dset_name_size   = ((op_data_t*) op_data)->out_dset_name_size;
+          auto &dset_rename_list_ptr = ((op_data_t*) op_data)->dset_rename_list_ptr;
 
     const string object_name_str = object_name;
 
@@ -41,7 +41,7 @@ herr_t combine_Cactus_HDF5(hid_t             loc_id,
 
     ostringstream regex_ss;
     regex_ss << DATASET_BASENAME_1
-             << " it=([0-9]+) tl=0(?: m=)?([0-9]+)? rl=([0-9]+) c=([0-9]+)";
+             << " it=([0-9]+) tl=([0-9]+)(?: m=)?([0-9]+)? rl=([0-9]+) c=([0-9]+)";
 
     try {
         const regex rule(regex_ss.str());
@@ -49,19 +49,20 @@ herr_t combine_Cactus_HDF5(hid_t             loc_id,
 
         // Try to match the object name against the regex
         if (regex_match(object_name_str, matches, rule)) {
-            assert(matches.size() == 5);
+            assert(matches.size() == 6);
             const auto dset1_name = matches.str(0);
             const auto it         = matches.str(1);
-            const auto map        = (matches[2].length() == 0) ? to_string(0) : matches.str(2);
-            const auto rlvl       = matches.str(3);
-            const auto comp       = matches.str(4);
+            const auto tl         = matches.str(2);
+            const auto m          = (matches[3].length() == 0) ? to_string(0) : matches.str(3);
+            const auto rl         = matches.str(4);
+            const auto c          = matches.str(5);
 
             const auto dset1 = output_file_ptr->openDataSet(dset1_name);
             DataSet dset2;
 
             /* Add the name of the current dataset to the list of datasets in
-             * the output file for later renaming                               */
-            dset_list_ptr->push_back(object_name_str);
+             * the output file to be renamed                                    */
+            dset_rename_list_ptr->push_back(object_name_str);
 
 
             /* Try to open dataset 2 with the same iteration, map, refinement
@@ -69,7 +70,7 @@ herr_t combine_Cactus_HDF5(hid_t             loc_id,
             try {
                 ostringstream dset2_name_ss;
                 dset2_name_ss << DATASET_BASENAME_2
-                    << " it=" << it << " tl=0 rl=" << rlvl << " c=" << comp;
+                    << " it=" << it << " tl=" << tl << " rl=" << rl << " c=" << c;
                 dset2 = input_file_2_ptr->openDataSet(dset2_name_ss.str());
             }
 
@@ -77,7 +78,7 @@ herr_t combine_Cactus_HDF5(hid_t             loc_id,
                 try {
                     ostringstream dset2_name_ss_again;
                     dset2_name_ss_again << DATASET_BASENAME_2
-                        << " it=" << it << " tl=0 m=" << map << " rl=" << rlvl << " c=" << comp;
+                        << " it=" << it << " tl=" << tl << " m=" << m << " rl=" << rl << " c=" << c;
                     dset2 = input_file_2_ptr->openDataSet(dset2_name_ss_again.str());
                 }
 
@@ -235,17 +236,18 @@ herr_t combine_Cactus_HDF5(hid_t             loc_id,
             cout << "Done processing dataset '"
                  << object_name_str << "'" << endl;
             #endif
-
-            return 0;  // Success, keep iterating over loc_id
         }
 
 
         else {
-            cout << "String '" << object_name_str
-                 << "' didn't match against regex '" << regex_ss.str()
-                 << "'; is it a Cactus dataset at all?" << endl;
-            return -1;  // Not reached, but it would stop iterating over loc_id
+            #if (VERBOSE)
+            cout << "WARNING: string '" << object_name_str
+                 << "' didn't match against regex '"
+                 << regex_ss.str() << "', proceeding" << endl;
+            #endif
         }
+
+        return 0;  // Keep on iterating over loc_id
     }
 
 
