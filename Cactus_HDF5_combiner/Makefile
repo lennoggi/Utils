@@ -35,7 +35,7 @@ endif
 
 # Objects to be built
 OBJ = Main.o Combine_Cactus_HDF5.o
-EXE = Cactus_HDF5_2D_combiner_exe
+EXE = Cactus_HDF5_combiner_exe
 
 
 # Build all targets

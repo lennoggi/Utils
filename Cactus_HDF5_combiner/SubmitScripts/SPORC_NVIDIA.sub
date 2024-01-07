@@ -1,0 +1,15 @@
+#!/bin/bash
+#SBATCH -A ccrg
+#SBATCH -p tier3
+#SBATCH -t 480:00:00
+#SBATCH -N 16 -n 576
+#SBATCH --cpus-per-task 1
+#SBATCH --mem 10g
+#SBATCH -J Cactus_HDF5_combiner_run
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=lorenzo.ennoggi@gmail.com
+#SBATCH -o Cactus_HDF5_combiner_run.out
+#SBATCH -e Cactus_HDF5_combiner_run.err
+
+##spack load /f6lx42s  # phdf5, not needed
+srun -n $SLURM_NTASKS ./Cactus_HDF5_combiner_exe

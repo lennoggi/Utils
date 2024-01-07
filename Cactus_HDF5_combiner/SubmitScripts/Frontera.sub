@@ -1,0 +1,13 @@
+#!/bin/bash
+#SBATCH -A PHY20010
+#SBATCH -p development
+#SBATCH -t 00:01:00
+#SBATCH -N 10 -n 512
+#SBATCH -J Cactus_HDF5_combiner_run
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=lorenzo.ennoggi@gmail.com
+#SBATCH -o Cactus_HDF5_combiner_run.out
+#SBATCH -e Cactus_HDF5_combiner_run.err
+
+ml hdf5
+time ibrun ./Cactus_HDF5_combiner_exe

@@ -1,0 +1,18 @@
+#! /bin/bash
+
+set -e
+
+simdir="/scratch3/07825/lennoggi/Cactus_HDF5_combiner_run"
+submitscript="Frontera.sub"
+submit_cmd="sbatch"
+
+mkdir ${simdir}
+cp ../Cactus_HDF5_combiner_exe ${simdir}
+cp ../SubmitScripts/${submitscript} ${simdir}
+cp ../Parameters.hh ${simdir}
+cd ${simdir}
+${submit_cmd} ${submitscript}
+
+echo ""
+echo "Job submitted successfully"
+echo ""

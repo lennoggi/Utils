@@ -1,0 +1,13 @@
+#!/bin/bash
+#PBS -r n
+#PBS -l walltime=06:00:00
+#PBS -l select=4:ncpus=32:mpiprocs=32:ompthreads=1
+#PBS -q prairies
+#PBS -o Cactus_HDF5_combiner_run.out
+#PBS -e Cactus_HDF5_combiner_run.err
+#PBS -N Cactus_HDF5_combiner_run
+#PBS -M lorenzo.ennoggi@gmail.com
+#PBS -m bea
+
+cd $PBS_O_WORKDIR
+mpiexec ./Cactus_HDF5_combiner_exe
