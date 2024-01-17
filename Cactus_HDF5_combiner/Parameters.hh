@@ -22,17 +22,23 @@ static_assert(MAX_FILE_INDEX >= MIN_FILE_INDEX);  // MAX_FILE_INDEX == MIN_FILE_
  * NOTE: INFILE2_BASENAME can be the same as INFILE1_BASENAME, typically if
  *       idealing with checkpoint files                                         */
 //#define INFILE1_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/output-0021/HDF5_2D/smallb2.xy"
-#define INFILE1_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/Checkpoint/checkpoint.chkpt.it_1468416"
+//#define INFILE1_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/Checkpoint/checkpoint.chkpt.it_1468416"
+//#define INFILE1_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08_large_PreMerger/Checkpoint/checkpoint.chkpt.it_1489920"
+#define INFILE1_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08_large_PostMergerCheckpoint_t11520/Checkpoint/checkpoint.chkpt.it_1474560"
 
 //#define INFILE2_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/output-0021/HDF5_2D/rho_b.xy"
 //#define INFILE2_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/output-0021/HDF5_2D/P.xy"
-#define INFILE2_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/Checkpoint/checkpoint.chkpt.it_1468416"
+//#define INFILE2_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/Checkpoint/checkpoint.chkpt.it_1468416"
+//#define INFILE2_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08_large_PreMerger/Checkpoint/checkpoint.chkpt.it_1489920"
+#define INFILE2_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08_large_PostMergerCheckpoint_t11520/Checkpoint/checkpoint.chkpt.it_1474560"
 
 
 // Basename of the output file
 //#define OUTFILE_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/output-0021/HDF5_2D/b2_over_rho.xy"
 //#define OUTFILE_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/output-0021/HDF5_2D/b2_over_2P.xy"
-#define OUTFILE_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/Checkpoint/checkpoint.chkpt.it_1468416_AphiAvecFilled_MPI"
+//#define OUTFILE_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/Checkpoint/checkpoint.chkpt.it_1468416_AphiAvecFilled"
+//#define OUTFILE_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08_large_PreMerger/Checkpoint/checkpoint.chkpt.it_1489920_AphiAvecFilled"
+#define OUTFILE_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08_large_PostMergerCheckpoint_t11520/Checkpoint/checkpoint.chkpt.it_1474560_AphiAvecFilled"
 
 
 /* Basenames of the datasets to be processed in each input file, separated by a
@@ -60,9 +66,10 @@ static_assert(MAX_FILE_INDEX >= MIN_FILE_INDEX);  // MAX_FILE_INDEX == MIN_FILE_
 #define OPERATION "linear combination"
 
 /* Linear combination: LINCOMB_A1*dataset1 + LINCOMB_A2*dataset2
- * NOTE: replacing dataset 1 with dataset 2 can be achieved with the following:
- *       #define LINCOMB_A1 0.
- *       #define LINCOMB_A2 1.                                                  */
+ * NOTE: replacing dataset 1 with dataset 2 in INFILE2_BASENAME can be achieved
+ *       via the following:
+ *         #define LINCOMB_A1 0.
+ *         #define LINCOMB_A2 1.                                                */
 #define LINCOMB_A1 0.
 #define LINCOMB_A2 1.
 
