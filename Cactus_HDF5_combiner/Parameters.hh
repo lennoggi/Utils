@@ -24,13 +24,15 @@ static_assert(MAX_FILE_INDEX >= MIN_FILE_INDEX);  // MAX_FILE_INDEX == MIN_FILE_
 //#define INFILE1_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/output-0021/HDF5_2D/smallb2.xy"
 //#define INFILE1_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/Checkpoint/checkpoint.chkpt.it_1468416"
 //#define INFILE1_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08_large_PreMerger/Checkpoint/checkpoint.chkpt.it_1489920"
-#define INFILE1_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08_large_PostMergerCheckpoint_t11520/Checkpoint/checkpoint.chkpt.it_1474560"
+//#define INFILE1_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08_large_PostMergerCheckpoint_t11520/Checkpoint/checkpoint.chkpt.it_1474560"
+#define INFILE1_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08_large_PostMerger_NoPsi6threshold_CapRho_checkpoint1487041_NonMag_DEVQUEUE/Checkpoint/checkpoint.chkpt.it_1487041"
 
 //#define INFILE2_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/output-0021/HDF5_2D/rho_b.xy"
 //#define INFILE2_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/output-0021/HDF5_2D/P.xy"
 //#define INFILE2_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/Checkpoint/checkpoint.chkpt.it_1468416"
 //#define INFILE2_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08_large_PreMerger/Checkpoint/checkpoint.chkpt.it_1489920"
-#define INFILE2_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08_large_PostMergerCheckpoint_t11520/Checkpoint/checkpoint.chkpt.it_1474560"
+//#define INFILE2_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08_large_PostMergerCheckpoint_t11520/Checkpoint/checkpoint.chkpt.it_1474560"
+#define INFILE2_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08_large_PostMerger_NoPsi6threshold_CapRho_checkpoint1487041_NonMag_DEVQUEUE/Checkpoint/checkpoint.chkpt.it_1487041"
 
 
 // Basename of the output file
@@ -38,7 +40,8 @@ static_assert(MAX_FILE_INDEX >= MIN_FILE_INDEX);  // MAX_FILE_INDEX == MIN_FILE_
 //#define OUTFILE_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/output-0021/HDF5_2D/b2_over_2P.xy"
 //#define OUTFILE_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08/Checkpoint/checkpoint.chkpt.it_1468416_AphiAvecFilled"
 //#define OUTFILE_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08_large_PreMerger/Checkpoint/checkpoint.chkpt.it_1489920_AphiAvecFilled"
-#define OUTFILE_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08_large_PostMergerCheckpoint_t11520/Checkpoint/checkpoint.chkpt.it_1474560_AphiAvecFilled"
+//#define OUTFILE_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08_large_PostMergerCheckpoint_t11520/Checkpoint/checkpoint.chkpt.it_1474560_AphiAvecFilled"
+#define OUTFILE_BASENAME "/scratch3/07825/lennoggi/BBH_handoff_McLachlan_pp08_large_PostMerger_NoPsi6threshold_CapRho_checkpoint1487041_NonMag_DEVQUEUE/Checkpoint/checkpoint.chkpt.it_1487041_NonMag"
 
 
 /* Basenames of the datasets to be processed in each input file, separated by a
@@ -46,7 +49,8 @@ static_assert(MAX_FILE_INDEX >= MIN_FILE_INDEX);  // MAX_FILE_INDEX == MIN_FILE_
  * NOTE: escape square brackets with a DOUBLE backslash (e.g.
  *       "HYDROBASE::Avec\\[0\\]"), otherwise regex matching doesn't work       */
 //#define INDSETS1_BASENAMES "SMALLBPOYNET::smallb2"
-#define INDSETS1_BASENAMES "HYDROBASE::Aphi HYDROBASE::Avec\\[0\\] HYDROBASE::Avec\\[1\\] HYDROBASE::Avec\\[2\\]"
+//#define INDSETS1_BASENAMES "HYDROBASE::Aphi HYDROBASE::Avec\\[0\\] HYDROBASE::Avec\\[1\\] HYDROBASE::Avec\\[2\\]"
+#define INDSETS1_BASENAMES "ILLINOISGRMHD::psi6phi ILLINOISGRMHD::Ax ILLINOISGRMHD::Ay ILLINOISGRMHD::Az"
 
 //#define INDSETS2_BASENAMES "ILLINOISGRMHD::rho_b"
 //#define INDSETS2_BASENAMES "ILLINOISGRMHD::P"
@@ -69,9 +73,12 @@ static_assert(MAX_FILE_INDEX >= MIN_FILE_INDEX);  // MAX_FILE_INDEX == MIN_FILE_
  * NOTE: replacing dataset 1 with dataset 2 in INFILE2_BASENAME can be achieved
  *       via the following:
  *         #define LINCOMB_A1 0.
- *         #define LINCOMB_A2 1.                                                */
+ *         #define LINCOMB_A2 1.
+ * NOTE: zeroing out all elements of dataset 1 can be achieved via the following:
+ *         #define LINCOMB_A1 0.
+ *         #define LINCOMB_A2 0.                                                */
 #define LINCOMB_A1 0.
-#define LINCOMB_A2 1.
+#define LINCOMB_A2 0.
 
 // Overall multiplicative factor when computing a product or ratio
 //#define PROD_RATIO_FAC 1.
