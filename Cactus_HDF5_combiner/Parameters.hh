@@ -62,7 +62,8 @@ static_assert(MAX_FILE_INDEX >= MIN_FILE_INDEX);  // MAX_FILE_INDEX == MIN_FILE_
  *       involved)                                                              */
 //#define OUTDSETS_BASENAMES "ILLINOISGRMHD::b2_over_rho"
 //#define OUTDSETS_BASENAMES "ILLINOISGRMHD::b2_over_2P"
-#define OUTDSETS_BASENAMES "HYDROBASE::Aphi HYDROBASE::Avec[0] HYDROBASE::Avec[1] HYDROBASE::Avec[2]"
+//#define OUTDSETS_BASENAMES "HYDROBASE::Aphi HYDROBASE::Avec[0] HYDROBASE::Avec[1] HYDROBASE::Avec[2]"
+#define OUTDSETS_BASENAMES "ILLINOISGRMHD::psi6phi ILLINOISGRMHD::Ax ILLINOISGRMHD::Ay ILLINOISGRMHD::Az"
 
 
 // Choose among "linear combination", "product", or "ratio"
