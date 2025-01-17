@@ -27,7 +27,7 @@ do
                 message+="Current time: $(date '+%Y-%m-%d %H:%M:%S')\n"
                 echo -e "Subject:${subject}\n\n${message}" | sendmail "${USER}@localhost"
             else
-                echo "File '${myfile}' is active. Last updated: $(date -d @${last_modified_time} '+%Y-%m-%d %H:%M:%S')"
+                echo "\nFile '${myfile}' is active. Last updated: $(date -d @${last_modified_time} '+%Y-%m-%d %H:%M:%S')"
             fi
         else
             echo "Output file ${myfile} does not exist."
